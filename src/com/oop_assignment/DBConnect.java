@@ -72,7 +72,7 @@ public class DBConnect {
      * Method that creates a bar chart comparing two different groups of people based on the
      * factors that encourage them to take public transport
      * Takes query options from the GUI class in order to complete SQL query statement
-     * Used JFreechart
+     * Used JFreeChart
      * Source used to help create Bar Chart: https://www.tutorialspoint.com/jfreechart/jfreechart_database_interface.htm
      *
      * @param queryOption first query option

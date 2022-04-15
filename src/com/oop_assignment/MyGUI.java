@@ -195,7 +195,7 @@ public class MyGUI implements ActionListener {
         resultsFrame.setSize(700, 600);
         resultsFrame.setLocationRelativeTo(null);
 
-        // Create Jpanel
+        // Create JPanel
         resultsTablePanel = new JPanel();
 
         // JTable
