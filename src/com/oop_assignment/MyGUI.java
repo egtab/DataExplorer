@@ -104,7 +104,7 @@ public class MyGUI implements ActionListener {
         // Button panel components
         buttonPanel = new JPanel();
 
-        showButton = new JButton("Show results table");
+        showButton = new JButton("Show results");
         showButton.setBounds(100, 100, 90, 20);
         showButton.addActionListener(this);
 
