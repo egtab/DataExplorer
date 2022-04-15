@@ -10,8 +10,9 @@ import java.sql.SQLException;
 import org.jfree.chart.*;
 
 
-// This class creates the GUI and calls methods from the
-// DBConnect class
+/**
+ * This class creates the GUI and calls methods from the DBConnect class
+ */
 public class MyGUI implements ActionListener {
     // JFrames
     JFrame mainFrame, resultsFrame, loginFrame, chartFrame;
@@ -48,7 +49,9 @@ public class MyGUI implements ActionListener {
     String[] genderOptions = {"Female", "Male"};
 
 
-    // Class constructor - creates main GUI frame and components
+    /**
+     * Class constructor - creates main GUI frame and components
+     */
     public MyGUI() {
         // Call login frame
         loginFrame();
@@ -128,8 +131,11 @@ public class MyGUI implements ActionListener {
     } // end MyGUI()
 
 
-    // Method that prompts user to enter login details
-    // to connect to database server
+    /**
+     * Method that prompts user to enter login details
+     * to connect to database server
+     */
+    //
     public void loginFrame() {
         loginFrame = new JFrame("User Details");
         loginFrame.setSize(300, 200);
@@ -175,10 +181,12 @@ public class MyGUI implements ActionListener {
 
     } // end loginFrame()
 
+    /**
+     * Method that create a JFrame displaying
+     * the JTable of the results from the first query
+     * Source used to help create JTable from 2d array: https://www.tutorialspoint.com/how-to-set-multidimensional-array-into-jtable-with-java
+     */
 
-    // Method that create a JFrame displaying
-    // the JTable of the results from the first query
-    // Source used to help create JTable from 2d array: https://www.tutorialspoint.com/how-to-set-multidimensional-array-into-jtable-with-java
     public void resultsFrame() {
 
         // Create and configure results frame
@@ -210,9 +218,11 @@ public class MyGUI implements ActionListener {
 
     } // end resultsFrame()
 
+    /**
+     * Method that displays bar chart from
+     * the DBConnect class
+     */
 
-    // Method that displays bar chart from
-    // the DBConnect class
     public void createChart() {
         chartFrame = new JFrame("Chart");
         chartFrame.setSize(800, 500);
@@ -225,7 +235,11 @@ public class MyGUI implements ActionListener {
     } // end createChart()
 
 
-    // actionPerformed method for different buttons
+    /**
+     * actionPerformed method for different buttons
+     *
+     * @param e Action Event from pressed button
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {

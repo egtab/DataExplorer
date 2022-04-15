@@ -7,7 +7,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 
-// This class connects to the database server and executes the SQL queries
+/**
+ * This class connects to the database server and executes the SQL queries
+ */
 public class DBConnect {
 
     // Database details and login information
@@ -25,7 +27,9 @@ public class DBConnect {
     ResultSet rSet, rSet2;
 
 
-    // Class constructor - loads the database driver
+    /**
+     * Class constructor - loads the database driver
+     */
     public DBConnect() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -37,8 +41,14 @@ public class DBConnect {
 
     } // end DBConnect()
 
-    // Method that passes the username and password entered from the
-    // GUI class and connects to the database
+    /**
+     * Method that passes the username and password entered from the
+     * GUI class and connects to the database
+     *
+     * @param user the user's login username
+     * @param pass the user's login password
+     * @return a boolean stating whether login was successful or not
+     */
     public int connectToDB(String user, String pass) {
         // Connect to the database, passing the credentials
         int flag = 0;
@@ -58,11 +68,20 @@ public class DBConnect {
     } // end connectToDB()
 
 
-    // Method that creates a bar chart comparing two different groups of people based on the
-    // factors that encourage them to take public transport
-    // Takes query options from the GUI class in order to complete SQL query statement
-    // Used JFreechart
-    // Source used to help create Bar Chart: https://www.tutorialspoint.com/jfreechart/jfreechart_database_interface.htm
+    /**
+     * Method that creates a bar chart comparing two different groups of people based on the
+     * factors that encourage them to take public transport
+     * Takes query options from the GUI class in order to complete SQL query statement
+     * Used JFreechart
+     * Source used to help create Bar Chart: https://www.tutorialspoint.com/jfreechart/jfreechart_database_interface.htm
+     *
+     * @param queryOption first query option
+     * @param queryOption2 second query option
+     * @param queryOption3 third query option
+     * @param queryOption4 fourth query option
+     *
+     * @return JFreeChart that is displayed in the GUI class
+     */
     public JFreeChart createQuery(String queryOption, String queryOption2, String queryOption3, String queryOption4) throws SQLException {
         try {
 
@@ -117,9 +136,16 @@ public class DBConnect {
     } // end createQuery()
 
 
-    // Method that returns a 2d aray to the GUI class to create the JTable
-    // or query results
-    // Source used to help load result set into a 2d array: https://stackoverflow.com/questions/24547406/resultset-into-2d-array
+    /**
+     * Method that returns a 2d array to the GUI class to create the JTable
+     * or query results
+     * Source used to help load result set into a 2d array: https://stackoverflow.com/questions/24547406/resultset-into-2d-array
+     *
+     * @param queryOption first query option
+     * @param queryOption2 second query option
+     *
+     * @return returns 2d string array to create JTable in the GUI class
+     */
     public String[][] createResultsTable(String queryOption, String queryOption2) throws SQLException {
         try {
             // Query that takes the queryOption parameters from teh GUI class
@@ -157,8 +183,10 @@ public class DBConnect {
     } // end createResultsTable()
 
 
-    // Method that closes the connection to the database
-    // and also ends the program
+    /**
+     * Method that closes the connection to the database
+     * and also ends the program
+     */
     public void closeConnection() throws SQLException {
         conn.close();   // close the connection
         System.out.println("Connection closed");
