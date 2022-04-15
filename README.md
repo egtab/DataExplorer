@@ -2,14 +2,14 @@
 
 ## List of Classes
 **1. DBConnect**
- - This class connects to the database server and executes the SQL queries.
+* This class connects to the database server and executes the SQL queries.
 
 **2. MyGUI**
- - This class implements the GUI for the program using Java Swing. 
-It also uses methods from the DBConnect class.
+* This class implements the GUI for the program using Java Swing. 
+* It also uses methods from the DBConnect class.
 
 **3. Control**
- - This class creates a MyGUI object and contains the main method the
+* This class creates a MyGUI object and contains the main method the
 program is executed from.
 
 ## Core Functionality
