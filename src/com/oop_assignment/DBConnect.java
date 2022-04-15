@@ -1,156 +1,167 @@
 package com.oop_assignment;
 
-import java.io.IOException;
+// Imported packages
 import java.sql.*;
-import java.util.Arrays;
+import org.jfree.chart.*;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
+
+// This class connects to the database server and executes the SQL queries
 public class DBConnect {
 
-    // Database name and login information
+    // Database details and login information
     String serverName = "localhost";
     String portNumber = "1433";
     String sid = "DataExplorer";
     String url = "jdbc:sqlserver://" + serverName + ":" + portNumber + ";databaseName=" + sid + ";encrypt=true;" + "trustServerCertificate=true;";
-    String user, pass;
-    ResultSet rset;
 
     // SQL Objects
     Connection conn;
     Statement stmt;
-    String qry;
+    String qry, qry2;
     String[][] resultArray;
+    JFreeChart BarChartObject;
+    ResultSet rSet, rSet2;
 
+
+    // Class constructor - loads the database driver
     public DBConnect() {
-        // Load the db driver
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             System.out.println("driver loaded");
         } catch (ClassNotFoundException e) {
             System.out.println("Could not load the driver");
-        }
+
+        } // end try.. catch
 
     } // end DBConnect()
 
-    public void connectToDB(String user, String pass) {
+    // Method that passes the username and password entered from the
+    // GUI class and connects to the database
+    public int connectToDB(String user, String pass) {
         // Connect to the database, passing the credentials
+        int flag = 0;
         try {
 
             conn = DriverManager.getConnection(url, user, pass);
             System.out.println ("after connection");
-
+            flag = 1;
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
+
+        } // end try.. catch
+
+        return flag;
 
     } // end connectToDB()
 
-    public void createQuery(String queryOption, String queryOption2) throws SQLException {
+
+    // Method that creates a bar chart comparing two different groups of people based on the
+    // factors that encourage them to take public transport
+    // Takes query options from the GUI class in order to complete SQL query statement
+    public JFreeChart createQuery(String queryOption, String queryOption2, String queryOption3, String queryOption4) throws SQLException {
         try {
-            // Then, get a statement object (which will be used to execute queries, I/U/D etc)
-            stmt = conn.createStatement ();  // now have a mechanism to run SQL statements
-            qry = "select Age_Group, Gender, Factor_Description, Value from CommutingReasons where Gender = '"+queryOption+"' AND Age_Group = '"+queryOption2+"';";
-            rset = stmt.executeQuery(qry);
 
-            while (rset.next()) {
-                System.out.println(rset.getString(1) + " " +rset.getString(2) + " " +rset.getString(3)+" "+rset.getString(4));
+            // SQL variables that allow us to make queries to the database
+            // The first query that is made
+            stmt = conn.createStatement ();
+            qry = "select Factor_Description, Value from CommutingReasons where Gender = '"+queryOption+"' AND Age_Group = '"+queryOption2+"';";
+            rSet = stmt.executeQuery(qry);
 
+
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+            // Adds the results from the first query to the dataset
+            while (rSet.next()) {
+                String factor = rSet.getString("FACTOR_DESCRIPTION");
+                float value = Float.parseFloat(rSet.getString("VALUE"));
+                dataset.addValue(value,queryOption +" aged "+queryOption2, factor);
+            }
+
+            // The second query that is made
+            qry2 = "select Factor_Description, Value from CommutingReasons where Gender = '"+queryOption3+"' AND Age_Group = '"+queryOption4+"';";
+            rSet2 = stmt.executeQuery(qry2);
+
+            // Adds the results from the second query to the dataset
+            while (rSet2.next()) {
+                String factor = rSet2.getString("FACTOR_DESCRIPTION");
+                float value = Float.parseFloat(rSet2.getString("VALUE"));
+                dataset.addValue(value,queryOption3 +" aged " + queryOption4, factor);
             }
 
 
-            // okay plan - pass selected columns from GUI to here, create query statement that will be saved to string?
-            // or result set, hmm
-            // then got to showResults() method that will be called from GUI button that will show results
-            // will display in terminal for now, but hey, baby steps
+            // Create bar chart
+            BarChartObject = ChartFactory.createBarChart(
+                "Factors that encourage greater use of public transport",
+                "Factor Description",
+                "Percentage",
+                dataset,
+                PlotOrientation.HORIZONTAL,
+                true, true, false);
 
-
+            rSet.close();
+            rSet2.close();
 
         } catch (SQLException e) {
                 e.printStackTrace();
         }
+
         stmt.close();
+
+        return BarChartObject;
 
     } // end createQuery()
 
+
+    // Method that returns a 2d aray to the GUI class to create the JTable
+    // or query results
     public String[][] createResultsTable(String queryOption, String queryOption2) throws SQLException {
         try {
-
-            stmt = conn.createStatement ();  // now have a mechanism to run SQL statements
+            // Query that takes the queryOption parameters from teh GUI class
+            stmt = conn.createStatement ();
             qry = "select Age_Group, Gender, Factor_Description, Value from CommutingReasons where Gender = '"+queryOption+"' AND Age_Group = '"+queryOption2+"';";
-            rset = stmt.executeQuery(qry);
+            rSet = stmt.executeQuery(qry);
 
-            ResultSetMetaData metaData = rset.getMetaData();
+            // Populating the 2d array with the rows from the
+            // result set
+            ResultSetMetaData metaData = rSet.getMetaData();
             int numColumns = metaData.getColumnCount();
             int numRows = 14;
             resultArray = new String[numRows][numColumns];
             int i = 0;
 
-            while (rset.next()) {
+            while (rSet.next()) {
                 for (int j = 0; j < numColumns; j++) {
-                    resultArray[i][j] = rset.getString(j+1);
+                    resultArray[i][j] = rSet.getString(j+1);
                 }
 
                 i++;
 
+            } // end while loop
 
-                /*
-                System.out.println(rset.getString(1) + " " +rset.getString(2) + " " +rset.getString(3)+" "+rset.getString(4));
-
-                int row, col;
-                row = 14;
-                col = 4;
-                String age = rset.getString(1);
-                String gender = rset.getString(2);
-                String factor = rset.getString(3);
-                String value = rset.getString(4);
-
-                String[][] newRow = new String[row][col];
-
-
-
-
-                System.out.println(age);
-                System.out.println(gender);
-                System.out.println(factor);
-                System.out.println(value);
-
-                 */
-                // return string, assign each array index to a new variable
-                // to be passed to the resultsFrame method
-                // to add a new row to the
-
-            }
-
-            for (String[] row : resultArray) {
-                System.out.println();
-
-                for (String x : row){
-                    System.out.print(x + " ");
-
-                }
-
-            }
-
-
+            rSet.close();
 
             
         } catch (SQLException e) {
             e.printStackTrace();
         }
         stmt.close();
-        return resultArray;
 
+        return resultArray;
 
     } // end createResultsTable()
 
 
-
+    // Method that closes the connection to the database
+    // and also ends the program
     public void closeConnection() throws SQLException {
         conn.close();   // close the connection
         System.out.println("Connection closed");
         System.exit(0);
-    } // end closeConnection()
 
+    } // end closeConnection()
 
 } // end class DBConnect
 

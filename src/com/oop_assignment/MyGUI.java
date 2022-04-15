@@ -1,29 +1,44 @@
 package com.oop_assignment;
 
+// Imported packages
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import org.jfree.chart.*;
 
+
+// This class creates the GUI and calls methods from the
+// DBConnect class
 public class MyGUI implements ActionListener {
-    // GUI attributes
-    JFrame mainFrame, resultsFrame, loginFrame;
-    JComboBox<String> jcBoxAge, jcBoxGender, jcBoxFactor;
-    JButton loginButton, submitButton, closeButton, showButton;
-    JLabel label1, label2, userLabel, passLabel;
-    JPanel labelPanel, fieldPanel, jcBoxPanel, buttonPanel, resultsTablePanel;
+    // JFrames
+    JFrame mainFrame, resultsFrame, loginFrame, chartFrame;
+
+    // Login frame attributes
+    JLabel loginLabel, userLabel, passLabel;
     JTextField unameField;
     JPasswordField passField;
+    JButton loginButton;
+    JPanel loginPanel1, loginPanel2, loginPanel3, loginPanel4;
 
-    // JTable attributes
-    DefaultTableModel defaultTableModel;
+    // Main frame attributes
+    JComboBox<String> jcBoxAge, jcBoxGender, jcBoxAge2, jcBoxGender2;
+    JButton compareButton, closeButton, showButton;
+    JLabel titleLabel, filterLabel, compareLabel;
+    JPanel descriptionPanel, instructionsPanel, jcBoxPanel, jcBoxPanel2, jcBoxPanel3, buttonPanel;
+
+    // Results frame attributes
     JTable resultsTable;
     String[][] resultTableArray;
     String[] tableColumns = {"Age Group", "Gender", "Factor Description", "Value"};
+    JPanel resultsTablePanel;
     JScrollPane scrollPane;
+
+    // Chart frame attributes
+    JFreeChart resultBarChart;
+    ChartPanel chartPanel;
 
     // create DBConnect object
     DBConnect db1 = new DBConnect();
@@ -31,118 +46,152 @@ public class MyGUI implements ActionListener {
     // String array for query options
     String[] ageOptions = {"18 - 24 years", "25 - 34 years", "35 - 44 years", "45 - 54 years", "55 - 64 years", "65 - 74 years", "75 years and over"};
     String[] genderOptions = {"Female", "Male"};
-    String[] factorOptions = {"Better value", "Better access to services", "More enjoyment using services",
-                              "Ease of use of services", "More direct routes", "Closer stops to my destinations",
-                              "Improvements in disability access", "No alternative methods to travel", "Shorter journey times",
-                              "More reliable journey times", "More reliable timetables", "Greater frequency of service",
-                              "To help improve the environment", "None of these reasons"};
 
 
-    // Class constructor - create GUI frame and components
+    // Class constructor - creates main GUI frame and components
     public MyGUI() {
         // Call login frame
         loginFrame();
 
         // Create JFrame
         mainFrame = new JFrame("Data Explorer");
-        mainFrame.setSize(1000,700);
-        mainFrame.setLayout(new FlowLayout());
+        mainFrame.setSize(1000, 600);
+        mainFrame.setLayout(new BorderLayout());
+        mainFrame.setLocationRelativeTo(null);
 
-        // Create a panel and set layout
+
+        // Description panel components
+        descriptionPanel = new JPanel();
+        titleLabel = new JLabel("Factors that would encourage greater usage of public transport 2019");
+        titleLabel.setFont(new Font("Verdana",Font.BOLD,20));
+        descriptionPanel.add(titleLabel);
+
+        instructionsPanel = new JPanel();
+        ImageIcon icon = new ImageIcon("images/description.png");
+        instructionsPanel.add(new JLabel(icon));
+
+
+        // JCBox Panel components
         jcBoxPanel = new JPanel();
-        buttonPanel = new JPanel();
-
-
-        // Create labels
-        label1 = new JLabel("Select");
-
-        // Create jcbox
+        jcBoxPanel.setLayout(new GridLayout(2, 1, 5, 20));
+        filterLabel = new JLabel("Create table for: ");
+        jcBoxPanel2 = new JPanel();
         jcBoxAge = new JComboBox<>(ageOptions);
         jcBoxAge.setBounds(80, 50, 120, 20);
         jcBoxGender = new JComboBox<>(genderOptions);
         jcBoxGender.setBounds(80, 50, 120, 20);
-        jcBoxFactor = new JComboBox<>(factorOptions);
-        jcBoxFactor.setBounds(80, 50, 120, 20);
+
+        jcBoxPanel3 = new JPanel();
+        compareLabel = new JLabel("Compare with:");
+        jcBoxAge2 = new JComboBox<>(ageOptions);
+        jcBoxAge2.setBounds(80, 50, 120, 20);
+        jcBoxGender2 = new JComboBox<>(genderOptions);
+        jcBoxGender2.setBounds(80, 50, 120, 20);
+
+        jcBoxPanel2.add(filterLabel);
+        jcBoxPanel2.add(jcBoxAge);
+        jcBoxPanel2.add(jcBoxGender);
+        jcBoxPanel3.add(compareLabel);
+        jcBoxPanel3.add(jcBoxAge2);
+        jcBoxPanel3.add(jcBoxGender2);
+        jcBoxPanel.add(jcBoxPanel2);
+        jcBoxPanel.add(jcBoxPanel3);
 
 
-        // Create buttons
-        submitButton = new JButton("Submit");
-        submitButton.setBounds(100, 100, 90, 20);
-        submitButton.addActionListener(this);
+        // Button panel components
+        buttonPanel = new JPanel();
 
-        closeButton = new JButton("Close connection");
-        closeButton.setBounds(100, 100, 90, 20);
-        closeButton.addActionListener(this);
-
-        showButton = new JButton("Show results");
+        showButton = new JButton("Show results table");
         showButton.setBounds(100, 100, 90, 20);
         showButton.addActionListener(this);
 
+        compareButton = new JButton("Compare");
+        compareButton.setBounds(100, 100, 90, 20);
+        compareButton.addActionListener(this);
 
-        // add GUI components to panel
-        // add components to panel 1
-        jcBoxPanel.add(label1);
-        jcBoxPanel.add(jcBoxAge);
-        jcBoxPanel.add(jcBoxGender);
-        jcBoxPanel.add(jcBoxFactor);
+        closeButton = new JButton("Close");
+        closeButton.setBounds(100, 100, 90, 20);
+        closeButton.addActionListener(this);
 
-        // add components to panel 2
-        buttonPanel.add(submitButton);
+        // add components to button panel
         buttonPanel.add(showButton);
+        buttonPanel.add(compareButton);
         buttonPanel.add(closeButton);
 
-        // add panels to frame and make visible
-        mainFrame.add(jcBoxPanel);
-        mainFrame.add(buttonPanel);
+
+        // add panels to main frame
+        mainFrame.add(descriptionPanel, BorderLayout.NORTH);
+        mainFrame.add(jcBoxPanel, BorderLayout.EAST);
+        mainFrame.add(instructionsPanel, BorderLayout.WEST);
+        mainFrame.add(buttonPanel, BorderLayout.SOUTH);
+
     } // end MyGUI()
 
+
+    // Method that prompts user to enter login details
+    // to connect to database server
     public void loginFrame() {
         loginFrame = new JFrame("User Details");
         loginFrame.setSize(300, 200);
         loginFrame.setLayout(new BorderLayout(5, 5));
-        labelPanel = new JPanel();
-        fieldPanel = new JPanel();
-        labelPanel.setLayout(new GridLayout(0, 1, 2, 2));
-        fieldPanel.setLayout(new GridLayout(0, 1, 2, 2));
+        loginFrame.setLocationRelativeTo(null);
 
+        // Login panel components
+        loginPanel1 = new JPanel();
+        loginLabel = new JLabel("Please enter login details");
+        loginPanel1.add(loginLabel);
 
-        // User Panel components
+        // Label panel components
+        loginPanel2 = new JPanel();
+        loginPanel2.setLayout(new GridLayout(0, 1, 2, 2));
         userLabel = new JLabel("Username", SwingConstants.RIGHT);
         passLabel = new JLabel("Password", SwingConstants.RIGHT);
+        loginPanel2.add(userLabel);
+        loginPanel2.add(passLabel);
+
+        // Field panel components
+        loginPanel3 = new JPanel();
+        loginPanel3.setLayout(new GridLayout(0, 1, 2, 10));
         unameField = new JTextField();
         unameField.setBounds(80, 50, 120, 20);
-
         passField = new JPasswordField();
         passField.setBounds(80, 50, 120, 20);
+        loginPanel3.add(unameField);
+        loginPanel3.add(passField);
 
+        // Login button panel
+        loginPanel4 = new JPanel();
         loginButton = new JButton("Login");
         loginButton.addActionListener(this);
+        loginPanel4.add(loginButton);
 
-        labelPanel.add(userLabel);
-        labelPanel.add(passLabel);
-        fieldPanel.add(unameField);
-        fieldPanel.add(passField);
-        loginFrame.add(loginButton, BorderLayout.SOUTH);
+        // Add panels to JFrame
+        loginFrame.add(loginPanel1, BorderLayout.NORTH);
+        loginFrame.add(loginPanel2, BorderLayout.WEST);
+        loginFrame.add(loginPanel3, BorderLayout.CENTER);
+        loginFrame.add(loginPanel4, BorderLayout.SOUTH);
 
-        loginFrame.add(labelPanel, BorderLayout.WEST);
-        loginFrame.add(fieldPanel, BorderLayout.CENTER);
         loginFrame.setVisible(true);
 
     } // end loginFrame()
 
 
-
-
+    // Method that create a JFrame displaying
+    // the JTable of the results from the
+    // first query
     public void resultsFrame() {
+
+        // Create and configure results frame
         resultsFrame = new JFrame("Results");
         resultsFrame.setLayout(new FlowLayout());
         resultsFrame.setSize(700, 600);
+        resultsFrame.setLocationRelativeTo(null);
 
+        // Create Jpanel
         resultsTablePanel = new JPanel();
 
         // JTable
         resultsTable = new JTable(resultTableArray ,tableColumns);
-
         scrollPane = new JScrollPane(resultsTable);
         scrollPane.setPreferredSize(new Dimension(500, 400));
 
@@ -154,46 +203,63 @@ public class MyGUI implements ActionListener {
         columnModel.getColumn(3).setPreferredWidth(50);
 
 
-
+        // Add panels to frame and make frame visible
         resultsTablePanel.add(scrollPane);
         resultsFrame.add(resultsTablePanel);
         resultsFrame.setVisible(true);
 
-
-        for (String[] row : resultTableArray) {
-            System.out.println();
-
-            for (String x : row){
-                System.out.print(x + " ");
-
-            }
-
-        }
-
     } // end resultsFrame()
 
+
+    // Method that displays bar chart from
+    // the DBConnect class
+    public void createChart() {
+        chartFrame = new JFrame("Chart");
+        chartFrame.setSize(700, 500);
+        chartFrame.setLocationRelativeTo(null);
+
+        chartPanel = new ChartPanel(resultBarChart);
+        chartFrame.add(chartPanel);
+        chartFrame.setVisible(true);
+
+    } // end createChart()
+
+
+    // actionPerformed method for different buttons
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
             String uname = unameField.getText();
             String password = new String(passField.getPassword());
 
-            db1.connectToDB(uname, password);
-            loginFrame.setVisible(false);
-            mainFrame.setVisible(true);
+            int flag;
+            flag = db1.connectToDB(uname, password);
 
+            if (flag == 1){
+                loginFrame.setVisible(false);
+                JOptionPane.showMessageDialog(mainFrame, "Connection successful.");
+                mainFrame.setVisible(true);
+            }
+            else {
+                JFrame errorFrame = new JFrame();
+                JOptionPane.showMessageDialog(errorFrame,"Incorrect login details, please try again");
+            } // end inner if.. else
 
         }
-        else if (e.getSource() == submitButton) {
+        else if (e.getSource() == compareButton) {
             String genderOption = jcBoxGender.getItemAt(jcBoxGender.getSelectedIndex());
             String ageOption = jcBoxAge.getItemAt(jcBoxAge.getSelectedIndex());
+            String genderOption2 = jcBoxGender2.getItemAt(jcBoxGender2.getSelectedIndex());
+            String ageOption2 = jcBoxAge2.getItemAt(jcBoxAge2.getSelectedIndex());
 
             try {
-                db1.createQuery(genderOption, ageOption);
+                resultBarChart = db1.createQuery(genderOption, ageOption, genderOption2, ageOption2);
             } catch (SQLException ex) {
                 ex.printStackTrace();
-            }
+            } // end try.. catch
 
+            // Call chart frame
+            createChart();
 
         }
         else if (e.getSource() == showButton) {
@@ -205,11 +271,10 @@ public class MyGUI implements ActionListener {
                 resultTableArray = db1.createResultsTable(genderOption, ageOption);
             } catch (SQLException ex) {
                 ex.printStackTrace();
-            }
+            } // end try.. catch
 
+            // Call results frame
             resultsFrame();
-
-
 
         }
         else if (e.getSource() == closeButton) {
@@ -217,9 +282,9 @@ public class MyGUI implements ActionListener {
                 db1.closeConnection();
             } catch (SQLException ex) {
                 ex.printStackTrace();
-            }
+            } // end try.. catch
 
-        }
+        } // end if statement
 
     } // end actionPerformed()
 
