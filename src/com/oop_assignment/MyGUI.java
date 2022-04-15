@@ -62,7 +62,7 @@ public class MyGUI implements ActionListener {
 
         // Description panel components
         descriptionPanel = new JPanel();
-        titleLabel = new JLabel("Factors that would encourage greater usage of public transport 2019");
+        titleLabel = new JLabel("2019 Factors that would encourage greater usage of public transport");
         titleLabel.setFont(new Font("Verdana",Font.BOLD,20));
         descriptionPanel.add(titleLabel);
 
@@ -177,8 +177,8 @@ public class MyGUI implements ActionListener {
 
 
     // Method that create a JFrame displaying
-    // the JTable of the results from the
-    // first query
+    // the JTable of the results from the first query
+    // Source used to help create JTable from 2d array: https://www.tutorialspoint.com/how-to-set-multidimensional-array-into-jtable-with-java
     public void resultsFrame() {
 
         // Create and configure results frame
@@ -215,7 +215,7 @@ public class MyGUI implements ActionListener {
     // the DBConnect class
     public void createChart() {
         chartFrame = new JFrame("Chart");
-        chartFrame.setSize(700, 500);
+        chartFrame.setSize(800, 500);
         chartFrame.setLocationRelativeTo(null);
 
         chartPanel = new ChartPanel(resultBarChart);

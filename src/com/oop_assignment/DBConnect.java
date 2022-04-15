@@ -61,6 +61,8 @@ public class DBConnect {
     // Method that creates a bar chart comparing two different groups of people based on the
     // factors that encourage them to take public transport
     // Takes query options from the GUI class in order to complete SQL query statement
+    // Used JFreechart
+    // Source used to help create Bar Chart: https://www.tutorialspoint.com/jfreechart/jfreechart_database_interface.htm
     public JFreeChart createQuery(String queryOption, String queryOption2, String queryOption3, String queryOption4) throws SQLException {
         try {
 
@@ -94,7 +96,7 @@ public class DBConnect {
 
             // Create bar chart
             BarChartObject = ChartFactory.createBarChart(
-                "Factors that encourage greater use of public transport",
+                "2019 Factors that would encourage greater use of public transport",
                 "Factor Description",
                 "Percentage",
                 dataset,
@@ -117,6 +119,7 @@ public class DBConnect {
 
     // Method that returns a 2d aray to the GUI class to create the JTable
     // or query results
+    // Source used to help load result set into a 2d array: https://stackoverflow.com/questions/24547406/resultset-into-2d-array
     public String[][] createResultsTable(String queryOption, String queryOption2) throws SQLException {
         try {
             // Query that takes the queryOption parameters from teh GUI class
