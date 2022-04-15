@@ -15,7 +15,7 @@
 ## Core Functionality
 * Program successfully connects to SQL Server database using JDBC.
 * Queries can be made to the selected database and is displayed.
-* Query paramters can be put in through GUI.
+* Query parameters can be put in through GUI.
 
 ## Optional Functionality
 * Query results can be seen through the GUI - results can be displayed on a GUI JTable.
